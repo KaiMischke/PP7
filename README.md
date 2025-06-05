@@ -91,6 +91,12 @@ In this exercise you will:
    * Run `./solutions/sample` and confirm it prints `Hello, PP7!`.
 6. **Explain** in comments or a short README how each stage transforms the code.
 
+   A) Präprozessierung: Die erste Stufe `gcc -E sample.c -o sample.i` löst Direktiven wie `#include` und `#define` auf. Ergebnis: ein reiner C-Quelltext mit vollständigem Code aus z. B. `stdio.h`
+   B) Kompilierung: Die zweite Stufe `gcc -S sample.i -o sample.s` übersetzt den C-Code in Assembly. Ergebnis: Menschenlesbarer Assembler-Code mit Funktionsaufrufen wie `call` oder `movl`
+   C) Assemblierung: Die dritte Stufe `gcc -c sample.s -o sample.o` wandelt den Assembler-Code in Objekt-Code um. Ergebnis: Binäre Datei mit Maschinenbefehlen, aber noch nicht ausführbar.
+   D) Linking: Die vierte Stufe `gcc sample.o -o sample` verbindet die Objektdatei mit Standardbibliotheken (z. B. libc, in der printf definiert ist). Ergebnis: Vollständig ausführbares Programm.
+   E) Ausführen: `./sample` führt das Programm aus
+
 ---
 
 ### Task 2: Regex Search & Replace in Code
@@ -131,6 +137,22 @@ In this exercise you will:
    vim -c ":%s/printf/debug_printf/g" -c ":wq" solutions/debug_sample.c
    ```
 7. **Explain** each tool’s approach to regex-based search and replace, and when you might prefer one over the others.
+
+   A) `grep` - search only
+   Ansatz: `grep` durchsucht Dateien nach Mustern, die mit regulären Ausdrücken beschrieben sind. Es gibt nur Trefferzeilen aus, ohne Änderungen am Inhalt vorzunehmen.
+   Bevorzugt, wenn: man schnell nach Code- oder Textmustern suchen will, z. B. um alle Funktionsaufrufe zu finden oder zu überprüfen, ob ein Pattern überhaupt vorhanden ist.
+
+   B) `sed` - search and replace
+   Ansatz: `sed` durchsucht Textzeilen mit regulären Ausdrücken und kann diese inline modifizieren. Es eignet sich hervorragend für automatisierte Ersetzungen.
+   Bevorzugt, wenn: man viele Dateien automatisiert bearbeiten möchte.
+
+   C) `awk` - search & process
+   Ansatz: `awk` kombiniert Pattern Matching mit Aktionen. Es kann Zeilen mit einem bestimmten Regex erkennen und dann benutzerdefinierte Operationen (z. B. Ausgaben, Zählen, Berechnungen) ausführen.
+   Bevorzugt, wenn: man zeilenweise analysieren oder filtern möchte, z. B. Treffer mit Zeilennummer ausgeben oder bestimmte Muster statistisch auswerten will.
+
+   D) `vim` Interactive or scripted search & relpace
+   Ansatz: `vim` erlaubt sowohl interaktive als auch skriptgesteuerte Suchen und Ersetzungen mit regulären Ausdrücken. Die Befehle ähneln sed, sind aber in einer Texteditor-Umgebung eingebettet.
+   Bevorzugt, wenn: man Änderungen visuell kontrollieren möchte oder komplexere Refactorings mit kontextbezogenen Entscheidungen durchführen will.
 
 ---
 
@@ -176,6 +198,21 @@ In this exercise you will:
    * The role of `extern` declarations.
    * Why separating compilation can speed up builds.
    * How manual linking differs from letting `gcc` handle all steps in one command.
+
+   A) Role of extern:
+   Das Schlüsselwort „extern“ in „main.c“ gibt an, dass die Funktion „add“ in einer anderen Übersetzungseinheit (add.c) definiert ist. Dies ermöglicht dem Compiler eine Typprüfung der   Verwendung, ohne die vollständige Definition einsehen zu müssen.
+
+   B)Benefits of separate compilation:
+   - Nur geänderte Quelldateien müssen neu kompiliert werden.
+   - Schnellere Builds, insbesondere bei großen Projekten.
+   - Ermöglicht die Wiederverwendung kompilierter Objektdateien in verschiedenen Programmen.
+
+   C) Manual linking:
+   - Durch die Verwendung von „gcc -c“ wird jede Quelldatei ohne Verknüpfung in eine „.o“-Objektdatei kompiliert.
+   - Dann verknüpft der letzte „gcc“-Aufruf diese Objektdateien zu einer einzigen ausführbaren Datei.
+   - Dies ermöglicht eine bessere Kontrolle über den Erstellungsprozess (z. B. welche Dateien verknüpft werden sollen, in welcher Reihenfolge usw.).
+   - Im Gegensatz dazu übernimmt ein Ein-Schritt-Befehl wie „gcc main.c add.c -o add_example“ die Kompilierung und Verknüpfung automatisch, jedoch ohne Modularität.
+
 
 ---
 
